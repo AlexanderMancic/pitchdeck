@@ -1,31 +1,3 @@
-{{define "content"}}
-    <p>You should see this content on the page.</p>
-    <p>If you don't, check:</p>
-    <ul>
-        <li>Did you create both template files?</li>
-        <li>Is your folder structure correct?</li>
-        <li>Are you accessing http://localhost:8080?</li>
-    </ul>
-    <p>{{.Title}}</p>
+<title hx-swap-oob="true">Home</title>
 
-    <my-counter id="counter1"></my-counter>
-
-    <div>Testing</div>
-
-    <button 
-        hx-get="/message" 
-        hx-target="#msg-container" 
-        hx-swap="innerHTML">
-        Load Message
-    </button>
-
-    <button 
-        hx-get="/removemessage" 
-        hx-target="#msg-container" 
-        hx-swap="innerHTML">
-        Remove Message
-    </button>
-
-    <div id="msg-container"></div>
-
-{{end}}
+<h1>Home</h1>

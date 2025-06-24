@@ -40,49 +40,23 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Execute template
-	data := struct {
-		Title string
-	}{
-		Title: "Pitchdeck",
-	}
-	err = tmpl.ExecuteTemplate(w, "layout.html", data)
+	err = tmpl.ExecuteTemplate(w, "layout.html", nil)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
 
-/*
-func messageHandler(w http.ResponseWriter, r *http.Request) {
-	// Serve a small partial (not the whole layout)
-	// tmpl, err := template.ParseFiles("templates/message.html")
-	tmpl, err := template.New("message.html").ParseFiles("templates/message.html")
+func homeHandler(w http.ResponseWriter, r *http.Request) {
+	tmpl, err := template.New("home.html").ParseFiles("templates/home.html")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	data := struct {
-		Message string
-	}{
-		Message: "Hello from HTMX!",
-	}
-
-	err = tmpl.Execute(w, data)
+	err = tmpl.Execute(w, nil)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
-}
-
-func removeMessageHandler(w http.ResponseWriter, r *http.Request) {
-
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	w.Write([]byte("<div id='removed'></div>"))
-}
-*/
-
-func homeHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	w.Write([]byte("<h1>Home</h1>"))
 }
 
 var slideCounter int = 1
@@ -94,23 +68,23 @@ func pitchdeckHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	url := fmt.Sprintf("/static/png/Folie%v.PNG", slideCounter)
-
-	data := struct {
-		URL string
-	}{
-		URL: url,
-	}
-
-	err = tmpl.Execute(w, data)
+	err = tmpl.Execute(w, nil)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
 
 func teamHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	w.Write([]byte("<h1>Team</h1>"))
+	tmpl, err := template.New("team.html").ParseFiles("templates/team.html")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	err = tmpl.Execute(w, nil)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
 
 func nextSlideHandler(w http.ResponseWriter, r *http.Request) {
