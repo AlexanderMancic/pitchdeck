@@ -8,8 +8,37 @@
     <script src="https://unpkg.com/htmx.org@1.9.12"></script>
 </head>
 <body>
-    <h1>This definitely works!</h1>
-    {{template "content" .}}
+
+    <nav>
+        <span
+            hx-trigger="load, click"
+            hx-get="/home"
+            hx-target="#main"
+            hx-swap="innerHTML"
+        >
+                Home
+        </span>
+        <span
+            hx-get="/pitchdeck"
+            hx-target="#main"
+            hx-swap="innerHTML"
+        >
+                Pitchdeck
+        </span>
+        <span
+            hx-get="/team"
+            hx-target="#main"
+            hx-swap="innerHTML"
+        >
+                Team
+        </span>
+    </nav>
+
+    <main id="main">
+
+    </main>
+    <!--
     <script type="module" src="/static/js/my-counter.js"></script>
+    -->
 </body>
 </html>

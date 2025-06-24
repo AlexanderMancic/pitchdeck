@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -16,20 +15,21 @@ func main() {
 	mux.Handle("/static/", http.StripPrefix("/static/", fs))
 
 	// Set up routes
-	mux.HandleFunc("/message", messageHandler)
-	mux.HandleFunc("/removemessage", removeMessageHandler)
-	mux.HandleFunc("/", homeHandler)
+	mux.HandleFunc("/home", homeHandler)
+	mux.HandleFunc("/pitchdeck", pitchdeckHandler)
+	mux.HandleFunc("/team", teamHandler)
+	mux.HandleFunc("/", rootHandler)
 
 	// Start server
 	log.Println("Server running on http://localhost:8080")
 	log.Fatal(http.ListenAndServe(":8080", mux))
 }
 
-func homeHandler(w http.ResponseWriter, r *http.Request) {
+func rootHandler(w http.ResponseWriter, r *http.Request) {
 	// Parse templates
 	tmpl, err := template.ParseFiles(
 		filepath.Join("templates", "layout.html"),
-		filepath.Join("templates", "home.html"),
+		// filepath.Join("templates", "home.html"),
 	)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -40,7 +40,7 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 	data := struct {
 		Title string
 	}{
-		Title: "Working Example",
+		Title: "Pitchdeck",
 	}
 	err = tmpl.ExecuteTemplate(w, "layout.html", data)
 	if err != nil {
@@ -48,6 +48,7 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+/*
 func messageHandler(w http.ResponseWriter, r *http.Request) {
 	// Serve a small partial (not the whole layout)
 	// tmpl, err := template.ParseFiles("templates/message.html")
@@ -73,4 +74,20 @@ func removeMessageHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.Write([]byte("<div id='removed'></div>"))
+}
+*/
+
+func homeHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.Write([]byte("<h1>Home</h1>"))
+}
+
+func pitchdeckHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.Write([]byte("<h1>Pitchdeck</h1>"))
+}
+
+func teamHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.Write([]byte("<h1>Team</h1>"))
 }

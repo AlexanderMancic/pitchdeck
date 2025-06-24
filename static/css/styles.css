@@ -1,26 +1,8 @@
 body {
-	font-family: Arial, sans-serif;
-	line-height: 1.6;
 	margin: 0;
 	padding: 0;
-	color: #333;
 }
 
-header {
-	background: #f4f4f4;
-	padding: 1rem;
-}
-
-nav a {
-	margin-right: 1rem;
-}
-
-main {
-	padding: 2rem;
-}
-
-footer {
-	background: #f4f4f4;
-	padding: 1rem;
-	text-align: center;
+nav>span {
+	cursor: pointer;
 }
