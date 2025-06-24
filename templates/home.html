@@ -9,4 +9,23 @@
     <p>{{.Title}}</p>
 
     <my-counter id="counter1"></my-counter>
+
+    <div>Testing</div>
+
+    <button 
+        hx-get="/message" 
+        hx-target="#msg-container" 
+        hx-swap="innerHTML">
+        Load Message
+    </button>
+
+    <button 
+        hx-get="/removemessage" 
+        hx-target="#msg-container" 
+        hx-swap="innerHTML">
+        Remove Message
+    </button>
+
+    <div id="msg-container"></div>
+
 {{end}}
