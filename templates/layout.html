@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{.Title}}</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="stylesheet" href="/static/css/red.css">
+    <script src="https://unpkg.com/@webcomponents/webcomponentsjs@2.8.0/webcomponents-loader.js"></script>
+</head>
+<body>
+    <h1>This definitely works!</h1>
+    {{template "content" .}}
+    <script type="module" src="/static/js/my-counter.js"></script>
+</body>
+</html>
