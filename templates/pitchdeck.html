@@ -5,6 +5,7 @@
 </div>
 
 <button
+    id="prevSlide"
     hx-post="/previousslide"
     hx-swap="innerHTML"
     hx-target="#slide"
@@ -13,9 +14,21 @@
 </button>
 
 <button
+    id="nextSlide"
     hx-post="/nextslide"
     hx-swap="innerHTML"
     hx-target="#slide"
 >
     >
 </button>
+
+<script>
+  document.addEventListener("keydown", function(event) {
+    if (event.key === "ArrowRight") {
+      htmx.trigger("#nextSlide", "click");
+    } else if (event.key === "ArrowLeft") {
+      htmx.trigger("#prevSlide", "click");
+    }
+  });
+</script>
+
