@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -18,6 +19,8 @@ func main() {
 	mux.HandleFunc("/home", homeHandler)
 	mux.HandleFunc("/pitchdeck", pitchdeckHandler)
 	mux.HandleFunc("/team", teamHandler)
+	mux.HandleFunc("/nextslide", nextSlideHandler)
+	mux.HandleFunc("/previousslide", previousSlideHandler)
 	mux.HandleFunc("/", rootHandler)
 
 	// Start server
@@ -82,12 +85,54 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("<h1>Home</h1>"))
 }
 
+var slideCounter int = 1
+
 func pitchdeckHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	w.Write([]byte("<h1>Pitchdeck</h1>"))
+	tmpl, err := template.New("pitchdeck.html").ParseFiles("templates/pitchdeck.html")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	url := fmt.Sprintf("/static/png/Folie%v.PNG", slideCounter)
+
+	data := struct {
+		URL string
+	}{
+		URL: url,
+	}
+
+	err = tmpl.Execute(w, data)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
 
 func teamHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.Write([]byte("<h1>Team</h1>"))
+}
+
+func nextSlideHandler(w http.ResponseWriter, r *http.Request) {
+
+	if slideCounter < 4 {
+		slideCounter++
+	}
+
+	html := fmt.Sprintf("<img src='/static/png/Folie%v.PNG' alt='Pitchdeckfolie'>", slideCounter)
+
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.Write([]byte(html))
+}
+
+func previousSlideHandler(w http.ResponseWriter, r *http.Request) {
+
+	if slideCounter > 1 {
+		slideCounter--
+	}
+
+	html := fmt.Sprintf("<img src='/static/png/Folie%v.PNG' alt='Pitchdeckfolie'>", slideCounter)
+
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.Write([]byte(html))
 }

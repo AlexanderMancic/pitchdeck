@@ -1,0 +1,21 @@
+<h1>Pitchdeck</h1>
+
+<div id="slide">
+    <img src="/static/png/Folie1.PNG" alt="Pitchdeckfolie">
+</div>
+
+<button
+    hx-post="/previousslide"
+    hx-swap="innerHTML"
+    hx-target="#slide"
+>
+    <
+</button>
+
+<button
+    hx-post="/nextslide"
+    hx-swap="innerHTML"
+    hx-target="#slide"
+>
+    >
+</button>
