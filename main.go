@@ -119,7 +119,13 @@ func nextSlideHandler(w http.ResponseWriter, r *http.Request) {
 		slideCounter++
 	}
 
-	html := fmt.Sprintf("<img src='/static/png/Folie%v.PNG' alt='Pitchdeckfolie'>", slideCounter)
+	html := fmt.Sprintf(
+		`
+		<img src='/static/png/Folie%v.PNG' alt='Pitchdeckfolie'>
+		<span id='pageNumber' hx-swap-oob="true">%v</span>`,
+		slideCounter,
+		slideCounter,
+	)
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.Write([]byte(html))
@@ -131,7 +137,13 @@ func previousSlideHandler(w http.ResponseWriter, r *http.Request) {
 		slideCounter--
 	}
 
-	html := fmt.Sprintf("<img src='/static/png/Folie%v.PNG' alt='Pitchdeckfolie'>", slideCounter)
+	html := fmt.Sprintf(
+		`
+		<img src='/static/png/Folie%v.PNG' alt='Pitchdeckfolie'>
+		<span id='pageNumber' hx-swap-oob="true">%v</span>`,
+		slideCounter,
+		slideCounter,
+	)
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.Write([]byte(html))
