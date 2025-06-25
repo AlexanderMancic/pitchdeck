@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"path/filepath"
+	"strings"
 )
 
 func main() {
@@ -21,6 +22,7 @@ func main() {
 	mux.HandleFunc("/team", teamHandler)
 	mux.HandleFunc("/nextslide", nextSlideHandler)
 	mux.HandleFunc("/previousslide", previousSlideHandler)
+	mux.HandleFunc("/guestbook", guestBookHandler)
 	mux.HandleFunc("/", rootHandler)
 
 	// Start server
@@ -61,8 +63,45 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 
 var slideCounter int = 1
 
+type Comment struct {
+	SlideNumber   int
+	Name, Comment string
+}
+
+var comments = []Comment{
+	{SlideNumber: 1, Name: "Alex", Comment: "Hallo Welt"},
+	{SlideNumber: 1, Name: "Jamie", Comment: "Nice intro!"},
+	{SlideNumber: 2, Name: "Chris", Comment: "Can you explain this more?"},
+	{SlideNumber: 2, Name: "Sam", Comment: "Interesting point here."},
+	{SlideNumber: 3, Name: "Phillip", Comment: "Was geht"},
+	{SlideNumber: 3, Name: "Taylor", Comment: "Great visuals!"},
+	{SlideNumber: 4, Name: "Jordan", Comment: "Wrap-up was clear."},
+	{SlideNumber: 4, Name: "Morgan", Comment: "Thanks for the presentation!"},
+}
+
 func pitchdeckHandler(w http.ResponseWriter, r *http.Request) {
 	tmpl, err := template.New("pitchdeck.html").ParseFiles("templates/pitchdeck.html")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	data := struct {
+		CurrentSlideNumber int
+		Comments           []Comment
+	}{
+		CurrentSlideNumber: slideCounter,
+		Comments:           comments,
+	}
+
+	err = tmpl.Execute(w, data)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
+func teamHandler(w http.ResponseWriter, r *http.Request) {
+	tmpl, err := template.New("team.html").ParseFiles("templates/team.html")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -74,8 +113,8 @@ func pitchdeckHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func teamHandler(w http.ResponseWriter, r *http.Request) {
-	tmpl, err := template.New("team.html").ParseFiles("templates/team.html")
+func guestBookHandler(w http.ResponseWriter, r *http.Request) {
+	tmpl, err := template.New("guestbook.html").ParseFiles("templates/guestbook.html")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -96,9 +135,11 @@ func nextSlideHandler(w http.ResponseWriter, r *http.Request) {
 	html := fmt.Sprintf(
 		`
 		<img src='/static/png/Folie%v.PNG' alt='Pitchdeckfolie'>
-		<span id='pageNumber' hx-swap-oob="true">%v</span>`,
+		<span id='pageNumber' hx-swap-oob="true">%v</span>
+		%s`,
 		slideCounter,
 		slideCounter,
+		renderCommentsHTML(comments),
 	)
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
@@ -114,11 +155,28 @@ func previousSlideHandler(w http.ResponseWriter, r *http.Request) {
 	html := fmt.Sprintf(
 		`
 		<img src='/static/png/Folie%v.PNG' alt='Pitchdeckfolie'>
-		<span id='pageNumber' hx-swap-oob="true">%v</span>`,
+		<span id='pageNumber' hx-swap-oob="true">%v</span>
+		%s`,
 		slideCounter,
 		slideCounter,
+		renderCommentsHTML(comments),
 	)
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.Write([]byte(html))
+}
+
+func renderCommentsHTML(comments []Comment) string {
+
+	var sb strings.Builder
+	sb.WriteString(`<div id="comments" hx-swap-oob="true">`)
+
+	for _, c := range comments {
+		if c.SlideNumber == slideCounter {
+			sb.WriteString(fmt.Sprintf("<h3>%s</h3><div>%s</div>", c.Name, c.Comment))
+		}
+	}
+
+	sb.WriteString("</div>")
+	return sb.String()
 }
