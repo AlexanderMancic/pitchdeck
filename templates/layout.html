@@ -2,43 +2,363 @@
 <html>
 <head>
     <title>Home</title>
-    <link rel="stylesheet" href="/static/css/styles.css">
-    <link rel="stylesheet" href="/static/css/red.css">
     <script src="https://unpkg.com/@webcomponents/webcomponentsjs@2.8.0/webcomponents-loader.js"></script>
     <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+
+    <style>
+        /* General Styles */
+        body {
+                font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f8f9fa;
+                color: #2c3e50;
+                line-height: 1.6;
+        }
+
+        /* Navigation - matches your existing navbar */
+        nav {
+                display: flex;
+                justify-content: center;
+                background-color: #fff;
+                padding: 1rem 2rem;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                border-bottom: 1px solid #e0e0e0;
+        }
+
+        .nav-link {
+                text-decoration: none;
+                color: #2c3e50;
+                font-weight: 500;
+                font-size: 1rem;
+                margin: 0 1.5rem;
+                padding: 0.5rem 0;
+                position: relative;
+                transition: all 0.3s ease;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+        }
+
+        .nav-link:hover {
+                color: #2c5282;
+                cursor: pointer;
+        }
+
+        .nav-link::after {
+                content: '';
+                position: absolute;
+                width: 0;
+                height: 2px;
+                bottom: 0;
+                left: 0;
+                background-color: #2c5282;
+                transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+                width: 100%;
+        }
+
+        /* Main Content Area */
+        #main {
+                max-width: 1200px;
+                margin: 2rem auto;
+                padding: 0 2rem;
+        }
+
+        h1 {
+                color: #2c3e50;
+                text-align: center;
+                margin-bottom: 2rem;
+                font-weight: 600;
+        }
+
+        /* Slide Container */
+        #slide {
+                background-color: #fff;
+                border-radius: 8px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                margin: 0 auto;
+                max-width: 900px;
+                overflow: hidden;
+                text-align: center;
+                padding: 1rem;
+        }
+
+        #slide img {
+                max-width: 100%;
+                height: auto;
+                display: block;
+                margin: 0 auto;
+                border-radius: 4px;
+        }
+
+        /* Navigation Controls */
+        #prevSlide,
+        #nextSlide {
+                background-color: #2c5282;
+                color: white;
+                border: none;
+                border-radius: 50%;
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                margin: 1rem;
+        }
+
+        #prevSlide:hover,
+        #nextSlide:hover {
+                background-color: #1a365d;
+                transform: scale(1.05);
+        }
+
+        #pageNumber {
+                display: inline-block;
+                min-width: 30px;
+                text-align: center;
+                font-weight: 600;
+                color: #2c3e50;
+        }
+
+        /* Comments Section */
+        #comments {
+                background-color: #fff;
+                border-radius: 8px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                margin: 2rem auto;
+                max-width: 900px;
+                padding: 1.5rem;
+        }
+
+        #comments h2 {
+                color: #2c3e50;
+                border-bottom: 2px solid #e0e0e0;
+                padding-bottom: 0.5rem;
+                margin-top: 0;
+        }
+
+        #comments h3 {
+                color: #2c5282;
+                margin-bottom: 0.5rem;
+        }
+
+        #comments div {
+                margin-bottom: 1.5rem;
+                padding-bottom: 1rem;
+                border-bottom: 1px solid #f0f0f0;
+        }
+
+        /* New Comment Button */
+        button[hx-get="/newcomment"] {
+                background-color: #2c5282;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                padding: 0.5rem 1rem;
+                font-size: 1rem;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                display: block;
+                margin: 1rem auto;
+        }
+
+        button[hx-get="/newcomment"]:hover {
+                background-color: #1a365d;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+                nav {
+                        flex-direction: column;
+                        padding: 1rem;
+                }
+
+                .nav-link {
+                        margin: 0.5rem 0;
+                }
+
+                #main {
+                        padding: 0 1rem;
+                }
+
+                #slide,
+                #comments {
+                        margin: 1rem auto;
+                }
+        }
+        /* Guestbook Styles */
+        #guestbook {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin: 2rem auto;
+            max-width: 900px;
+            padding: 1.5rem;
+        }
+
+        #guestbook h3 {
+            color: #2c5282;
+            margin-bottom: 0.5rem;
+        }
+
+        #guestbook div {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        button[hx-get="/newguestbookentry"] {
+            background-color: #2c5282;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 1rem auto;
+        }
+
+        button[hx-get="/newguestbookentry"]:hover {
+            background-color: #1a365d;
+        }
+
+        /* Center alignment additions */
+        #slide, #comments, #guestbook {
+            text-align: center;
+        }
+
+        .slide-navigation {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        #comments h2, #guestbook h1 {
+            text-align: center;
+        }
+
+        /* Form Styles */
+        form {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin: 2rem auto;
+            max-width: 600px;
+            padding: 2rem;
+        }
+
+        form h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-top: 0;
+        }
+
+        label {
+            display: block;
+            margin: 1rem 0 0.5rem;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #2c5282;
+            box-shadow: 0 0 0 2px rgba(44, 82, 130, 0.2);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        form button[type="submit"] {
+            background-color: #2c5282;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+            width: 100%;
+        }
+
+        form button[type="submit"]:hover {
+            background-color: #1a365d;
+            transform: translateY(-1px);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            form {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+        }
+        /* Center the Kommentare heading */
+        h2 {
+            text-align: center;
+            margin: 2rem 0 1rem;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+    </style>
 </head>
 <body>
 
     <nav>
-        <span
+        <a
             hx-trigger="load, click"
             hx-get="/home"
             hx-target="#main"
             hx-swap="innerHTML"
+            class="nav-link"
         >
                 Home
-        </span>
-        <span
+        </a>
+        <a
             hx-get="/pitchdeck"
             hx-target="#main"
             hx-swap="innerHTML"
+            class="nav-link"
         >
                 Pitchdeck
-        </span>
-        <span
+        </a>
+        <a
             hx-get="/team"
             hx-target="#main"
             hx-swap="innerHTML"
+            class="nav-link"
         >
                 Team
-        </span>
-        <span
+        </a>
+        <a
             hx-get="/guestbook"
             hx-target="#main"
             hx-swap="innerHTML"
+            class="nav-link"
         >
                 Gästebuch
-        </span>
+        </a>
     </nav>
 
     <main id="main">
