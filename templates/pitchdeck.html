@@ -34,7 +34,7 @@ document.addEventListener('htmx:beforeSwap', function() {
 
 <h1>Pitchdeck</h1>
 
-<div id="slide">
+<div id="slide" hx-swap="swap:1ms settle:1ms" hx-sync="this:replace">
     <img src="/static/png/Folie{{.CurrentSlideNumber}}.PNG" alt="Pitchdeck Foliennummer {{.CurrentSlideNumber}}">
 </div>
 
