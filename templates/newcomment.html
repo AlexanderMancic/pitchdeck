@@ -1,0 +1,14 @@
+<title hx-swap-oob="true">Neuer Kommentar</title>
+
+<h1>Neuer Kommentar</h1>
+
+<form id="commentForm" hx-post="/createcomment" hx-target="#main" hx-swap="innerHTML">
+    <label for="name">Name:</label><br>
+    <input type="text" id="name" name="name" required><br>
+
+    <label for="comment">Kommentar:</label><br>
+    <textarea id="comment" name="comment" rows="3" required></textarea><br>
+
+    <button type="submit">Absenden</button>
+</form>
+

@@ -23,6 +23,8 @@ func main() {
 	mux.HandleFunc("/nextslide", nextSlideHandler)
 	mux.HandleFunc("/previousslide", previousSlideHandler)
 	mux.HandleFunc("/guestbook", guestBookHandler)
+	mux.HandleFunc("/newcomment", newCommentHandler)
+	mux.HandleFunc("/createcomment", createwCommentHandler)
 	mux.HandleFunc("/", rootHandler)
 
 	// Start server
@@ -126,6 +128,38 @@ func guestBookHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func newCommentHandler(w http.ResponseWriter, r *http.Request) {
+	tmpl, err := template.New("newcomment.html").ParseFiles("templates/newcomment.html")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	err = tmpl.Execute(w, nil)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+func createwCommentHandler(w http.ResponseWriter, r *http.Request) {
+	// Parse form data
+	if err := r.ParseForm(); err != nil {
+		http.Error(w, "Failed to parse form", http.StatusBadRequest)
+		return
+	}
+
+	// Extract form fields
+	name := r.FormValue("name")
+	comment := r.FormValue("comment")
+
+	comments = append(comments, Comment{
+		SlideNumber: slideCounter,
+		Name:        name,
+		Comment:     comment,
+	})
+
+	pitchdeckHandler(w, r)
+}
+
 func nextSlideHandler(w http.ResponseWriter, r *http.Request) {
 
 	if slideCounter < 4 {
@@ -134,9 +168,10 @@ func nextSlideHandler(w http.ResponseWriter, r *http.Request) {
 
 	html := fmt.Sprintf(
 		`
-		<img src='/static/png/Folie%v.PNG' alt='Pitchdeckfolie'>
+		<img src='/static/png/Folie%v.PNG' alt='Pitchdeck Foliennummer %v'>
 		<span id='pageNumber' hx-swap-oob="true">%v</span>
 		%s`,
+		slideCounter,
 		slideCounter,
 		slideCounter,
 		renderCommentsHTML(comments),
@@ -154,9 +189,10 @@ func previousSlideHandler(w http.ResponseWriter, r *http.Request) {
 
 	html := fmt.Sprintf(
 		`
-		<img src='/static/png/Folie%v.PNG' alt='Pitchdeckfolie'>
+		<img src='/static/png/Folie%v.PNG' alt='Pitchdeck Foliennummer %v'>
 		<span id='pageNumber' hx-swap-oob="true">%v</span>
 		%s`,
+		slideCounter,
 		slideCounter,
 		slideCounter,
 		renderCommentsHTML(comments),

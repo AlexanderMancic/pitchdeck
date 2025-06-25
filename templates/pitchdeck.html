@@ -13,23 +13,23 @@
 <h1>Pitchdeck</h1>
 
 <div id="slide">
-    <img src="/static/png/Folie1.PNG" alt="Pitchdeckfolie">
+    <img src="/static/png/Folie{{.CurrentSlideNumber}}.PNG" alt="Pitchdeck Foliennummer {{.CurrentSlideNumber}}">
 </div>
 
 <button
     id="prevSlide"
-    hx-post="/previousslide"
+    hx-get="/previousslide"
     hx-swap="innerHTML"
     hx-target="#slide"
 >
     <
 </button>
 
-<span id="pageNumber">1</span>
+<span id="pageNumber">{{.CurrentSlideNumber}}</span>
 
 <button
     id="nextSlide"
-    hx-post="/nextslide"
+    hx-get="/nextslide"
     hx-swap="innerHTML"
     hx-target="#slide"
 >
@@ -39,9 +39,9 @@
 <h2>Kommentare</h2>
 
 <button
-    hx-post="/newcomment"
+    hx-get="/newcomment"
     hx-swap="innerHTML"
-    hx-target="#comments"
+    hx-target="#main"
 >
     Neu
 </button>
