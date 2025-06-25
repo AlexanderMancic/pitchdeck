@@ -1,0 +1,13 @@
+<title hx-swap-oob="true">Neuer Gästebucheintrag</title>
+
+<h1>Neuer Gästebucheintrag</h1>
+
+<form id="commentForm" hx-post="/createguestbookentry" hx-target="#main" hx-swap="innerHTML">
+    <label for="name">Name:</label><br>
+    <input type="text" id="name" name="name" required><br>
+
+    <label for="entry">Kommentar:</label><br>
+    <textarea id="entry" name="entry" rows="3" required></textarea><br>
+
+    <button type="submit">Absenden</button>
+</form>

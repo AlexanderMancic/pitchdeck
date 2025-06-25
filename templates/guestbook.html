@@ -1,3 +1,19 @@
 <title hx-swap-oob="true">Gästebuch</title>
 
 <h1>Gästebuch</h1>
+
+<button
+    hx-get="/newguestbookentry"
+    hx-swap="innerHTML"
+    hx-target="#main"
+>
+    Neu
+</button>
+
+<div id="guestbook">
+
+    {{range .GuestBookEntries}}
+        <h3>{{.Name}}</h3>
+        <div>{{.Entry}}</div>
+    {{end}}
+</div>

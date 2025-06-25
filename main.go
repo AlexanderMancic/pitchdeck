@@ -24,7 +24,9 @@ func main() {
 	mux.HandleFunc("/previousslide", previousSlideHandler)
 	mux.HandleFunc("/guestbook", guestBookHandler)
 	mux.HandleFunc("/newcomment", newCommentHandler)
-	mux.HandleFunc("/createcomment", createwCommentHandler)
+	mux.HandleFunc("/createcomment", createCommentHandler)
+	mux.HandleFunc("/newguestbookentry", newGuestBookEntryHandler)
+	mux.HandleFunc("/createguestbookentry", createGuestBookEntryHandler)
 	mux.HandleFunc("/", rootHandler)
 
 	// Start server
@@ -115,8 +117,42 @@ func teamHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+type GuestBookEntry struct {
+	Name, Entry string
+}
+
+var guestbook = []GuestBookEntry{
+	{Name: "Alex", Entry: "Hallo Welt"},
+	{Name: "Jamie", Entry: "Nice intro!"},
+	{Name: "Chris", Entry: "Can you explain this more?"},
+	{Name: "Sam", Entry: "Interesting point here."},
+	{Name: "Phillip", Entry: "Was geht"},
+	{Name: "Taylor", Entry: "Great visuals!"},
+	{Name: "Jordan", Entry: "Wrap-up was clear."},
+	{Name: "Morgan", Entry: "Thanks for the presentation!"},
+}
+
 func guestBookHandler(w http.ResponseWriter, r *http.Request) {
 	tmpl, err := template.New("guestbook.html").ParseFiles("templates/guestbook.html")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	data := struct {
+		GuestBookEntries []GuestBookEntry
+	}{
+		GuestBookEntries: guestbook,
+	}
+
+	err = tmpl.Execute(w, data)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
+func newGuestBookEntryHandler(w http.ResponseWriter, r *http.Request) {
+	tmpl, err := template.New("newguestbookentry.html").ParseFiles("templates/newguestbookentry.html")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -126,6 +162,25 @@ func guestBookHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
+}
+
+func createGuestBookEntryHandler(w http.ResponseWriter, r *http.Request) {
+	// Parse form data
+	if err := r.ParseForm(); err != nil {
+		http.Error(w, "Failed to parse form", http.StatusBadRequest)
+		return
+	}
+
+	// Extract form fields
+	name := r.FormValue("name")
+	entry := r.FormValue("entry")
+
+	guestbook = append(guestbook, GuestBookEntry{
+		Name:  name,
+		Entry: entry,
+	})
+
+	guestBookHandler(w, r)
 }
 
 func newCommentHandler(w http.ResponseWriter, r *http.Request) {
@@ -140,7 +195,8 @@ func newCommentHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
-func createwCommentHandler(w http.ResponseWriter, r *http.Request) {
+
+func createCommentHandler(w http.ResponseWriter, r *http.Request) {
 	// Parse form data
 	if err := r.ParseForm(); err != nil {
 		http.Error(w, "Failed to parse form", http.StatusBadRequest)
