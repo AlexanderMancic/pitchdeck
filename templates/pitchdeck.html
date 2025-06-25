@@ -1,11 +1,33 @@
 <script>
-  document.addEventListener("keydown", function(event) {
-    if (event.key === "ArrowRight") {
-      htmx.trigger("#nextSlide", "click");
-    } else if (event.key === "ArrowLeft") {
-      htmx.trigger("#prevSlide", "click");
+// Clean up any existing listeners
+document.removeEventListener('keydown', window.slideKeyHandler);
+
+// Create new handler with proper cleanup
+window.slideKeyHandler = function(event) {
+    if (event.key === 'ArrowRight') {
+        const nextBtn = document.getElementById('nextSlide');
+        if (nextBtn) {
+            nextBtn.click();
+            event.stopImmediatePropagation();
+            event.preventDefault();
+        }
+    } else if (event.key === 'ArrowLeft') {
+        const prevBtn = document.getElementById('prevSlide');
+        if (prevBtn) {
+            prevBtn.click();
+            event.stopImmediatePropagation();
+            event.preventDefault();
+        }
     }
-  });
+};
+
+// Add fresh listener with capture phase
+document.addEventListener('keydown', window.slideKeyHandler, true);
+
+// Clean up when page unloads
+document.addEventListener('htmx:beforeSwap', function() {
+    document.removeEventListener('keydown', window.slideKeyHandler, true);
+}, {once: true});
 </script>
 
 <title hx-swap-oob="true">Pitchdeck</title>
@@ -18,21 +40,23 @@
 
 <div class="slide-navigation">
     <button
-        id="prevSlide"
-        hx-get="/previousslide"
-        hx-swap="innerHTML"
-        hx-target="#slide"
+    id="prevSlide"
+    hx-get="/previousslide"
+    hx-swap="innerHTML"
+    hx-target="#slide"
+    hx-trigger="click, keydown[key=='ArrowLeft'] from:document"
     >
         <
-    </button>
+</button>
 
     <span id="pageNumber">{{.CurrentSlideNumber}}</span>
 
     <button
-        id="nextSlide"
-        hx-get="/nextslide"
-        hx-swap="innerHTML"
-        hx-target="#slide"
+    id="nextSlide"
+    hx-get="/nextslide"
+    hx-swap="innerHTML"
+    hx-target="#slide"
+    hx-trigger="click, keydown[key=='ArrowRight'] from:document"
     >
         >
     </button>
