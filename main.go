@@ -218,7 +218,7 @@ func createCommentHandler(w http.ResponseWriter, r *http.Request) {
 
 func nextSlideHandler(w http.ResponseWriter, r *http.Request) {
 
-	if slideCounter < 4 {
+	if slideCounter < 12 {
 		slideCounter++
 	}
 
