@@ -18,12 +18,11 @@ func main() {
 	mux.Handle("/static/", http.StripPrefix("/static/", fs))
 
 	// Routen für die verschiedenen Seiten und Funktionen definieren
-	mux.HandleFunc("/home", homeHandler)
-	mux.HandleFunc("/pitchdeck", pitchdeckHandler)
-	mux.HandleFunc("/team", teamHandler)
+	mux.HandleFunc("/home", homeHandler)                                 // Homepage-Handler
+	mux.HandleFunc("/pitchdeck", pitchdeckHandler)                       // Pitchdeck-Handler
 	mux.HandleFunc("/nextslide", nextSlideHandler)                       // Nächste Folie
 	mux.HandleFunc("/previousslide", previousSlideHandler)               // Vorherige Folie
-	mux.HandleFunc("/guestbook", guestBookHandler)                       // Gästebuch
+	mux.HandleFunc("/guestbook", guestBookHandler)                       // Gästebuch-Handler
 	mux.HandleFunc("/newcomment", newCommentHandler)                     // Neuer Kommentar Formular
 	mux.HandleFunc("/createcomment", createCommentHandler)               // Kommentar erstellen
 	mux.HandleFunc("/newguestbookentry", newGuestBookEntryHandler)       // Neuer Gästebucheintrag Formular
@@ -127,20 +126,6 @@ func pitchdeckHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err = tmpl.Execute(w, data)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
-}
-
-// Handler für die Team-Seite
-func teamHandler(w http.ResponseWriter, r *http.Request) {
-	tmpl, err := template.New("team.html").ParseFiles("templates/team.html")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	err = tmpl.Execute(w, nil)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
